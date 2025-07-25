@@ -1,0 +1,51 @@
+body {  
+    font-family: Arial, sans-serif;  
+    background-color: rgba(255, 255, 255, 0.062);  
+    margin: 0;  
+    padding: 0;  
+}  
+
+main {  
+    padding: 20px;  
+}  
+
+div {  
+    width:40%;  
+    display:inline-block;
+    margin: 20px 0;  
+    padding: 15px;  
+    background: #fff;  
+    border: 1px solid #ccc;  
+    border-radius: 10px;  
+}
+#about{
+    width: 48%;
+    margin: 15px;
+} 
+
+#book-services{
+    float: right;
+}
+
+#welcome{
+    width: 97%;
+    display: block;
+    text-align: center;
+
+}
+/* Add this to style the penalty label * in returnbook.html*/
+/* Add this to style the penalty label */
+label[for="penalty"] {
+    display: inline-block;
+}
+
+/* Style for the login and registeration */
+a{
+    display: block; 
+    text-align: center; 
+    margin-top: 10px;
+}
+a:hover {
+    text-decoration: underline;
+    color: #2a7ae2;
+}
