@@ -37,8 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'Library_M_S',  
+    'django.contrib.staticfiles', 
     'library',
 ]
 
@@ -79,7 +78,7 @@ WSGI_APPLICATION = 'Library_M_S.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'my_library',
+        'NAME': 'library_management',
         'USER': 'root',
         'PASSWORD': 'Shubham#@77',
         'HOST': 'localhost',
@@ -132,6 +131,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DEBUG = True

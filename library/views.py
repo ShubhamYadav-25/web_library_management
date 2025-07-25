@@ -8,34 +8,34 @@ from django.db.models import Q
 from datetime import date  
 from django.shortcuts import get_object_or_404  
 
-def create_triggers_and_procedures():
-    with connection.cursor() as cursor:
-        cursor.execute("""
-        DELIMITER //
-        CREATE TRIGGER update_copies_on_borrow
-        AFTER INSERT ON BorrowingRecords
-        FOR EACH ROW
-        BEGIN
-            UPDATE Books
-            SET copies_available = copies_available - 1
-            WHERE book_id = NEW.book_id;
-        END;//
-        DELIMITER ;
-        """)
-        cursor.execute("""
-        DELIMITER //
-        CREATE TRIGGER update_copies_on_return
-        AFTER UPDATE ON BorrowingRecords
-        FOR EACH ROW
-        BEGIN
-            IF NEW.status = 'returned' THEN
-                UPDATE Books
-                SET copies_available = copies_available + 1
-                WHERE book_id = NEW.book_id;
-            END IF;
-        END;//
-        DELIMITER ;
-        """)
+# def create_triggers_and_procedures():
+#     with connection.cursor() as cursor:
+#         cursor.execute("""
+#         DELIMITER //
+#         CREATE TRIGGER update_copies_on_borrow
+#         AFTER INSERT ON BorrowingRecords
+#         FOR EACH ROW
+#         BEGIN
+#             UPDATE Books
+#             SET copies_available = copies_available - 1
+#             WHERE book_id = NEW.book_id;
+#         END;//
+#         DELIMITER ;
+#         """)
+#         cursor.execute("""
+#         DELIMITER //
+#         CREATE TRIGGER update_copies_on_return
+#         AFTER UPDATE ON BorrowingRecords
+#         FOR EACH ROW
+#         BEGIN
+#             IF NEW.status = 'returned' THEN
+#                 UPDATE Books
+#                 SET copies_available = copies_available + 1
+#                 WHERE book_id = NEW.book_id;
+#             END IF;
+#         END;//
+#         DELIMITER ;
+#         """)
 
 # Create your views here.
 
@@ -49,7 +49,7 @@ def submit_page(request):
         Author = request.POST.get('Author')        #store the input Authur in  a variable.
         y=str(Author)                              # convert the input bookname to string.
         mybook = books.objects.filter(book_name__icontains=x,author_name__icontains=y).values()   #retrive the  book details from the database using the input bookname and authorname
-        template=loader.get_template('newapp/searchbook.html')    #using template to render is good for projects.
+        template=loader.get_template('library/searchbook.html')    #using template to render is good for projects.
         content = {                                               #specifing the values of placeholder.
             'mybook': mybook,
         }  
@@ -68,15 +68,15 @@ def submit_page(request):
             else:
                 mybook=books.objects.filter(genre__icontains=genstr).values()
 
-            return render(request, 'newapp/viewbooks.html', {'mybook': mybook})
+            return render(request, 'library/viewbooks.html', {'mybook': mybook})
         
         elif x!='' and genstr == '':                            # if category  is empty and bookname is not empty then filter the books based on bookname
            
             mybook=books.objects.filter(book_name__icontains=x).values()
-            return render(request, 'newapp/viewbooks.html', {'mybook': mybook})
+            return render(request, 'library/viewbooks.html', {'mybook': mybook})
         
         elif x=='' and genstr =='':                             # if both bookname and category are empty then show all the books in the database
-            return render(request, 'newapp/viewbooks.html')
+            return render(request, 'library/viewbooks.html')
         
         else:
             if genstr == 'Other':
@@ -84,7 +84,7 @@ def submit_page(request):
 
             else:
                 mybook = books.objects.filter(book_name__icontains=x,genre__icontains=genstr).values()   #check for bookname with category in the database
-            return render(request, 'newapp/viewbooks.html', {'mybook': mybook})
+            return render(request, 'library/viewbooks.html', {'mybook': mybook})
         
     elif form_type == 'issuebook_form':
         Bookname = request.POST.get('Bookname')     #stores the input bookname in  a variable.
@@ -117,7 +117,7 @@ def submit_page(request):
         else:  
             content['mybook'] = []                    #for passing the data to the template/html page.
 
-        return render(request, 'newapp/issuebook.html', content) 
+        return render(request, 'library/issuebook.html', content) 
 
     elif form_type == 'login_form':
         Username = request.POST.get('username')         #store  the input username in a variable
@@ -129,7 +129,7 @@ def submit_page(request):
         if myuser:
             return redirect('Home')                      #if the user is found in the database then redirect to the home page
         else:
-            return render(request,'newapp/login.html')   #if  the user is not found in the database then render the login page
+            return render(request,'library/login.html')   #if  the user is not found in the database then render the login page
         
     elif form_type == 'register_form':
         Username=request.POST.get('username')
@@ -174,21 +174,21 @@ def submit_page(request):
                 context['mybook']=book1
                 context['book']=mybook
 
-            return render(request, 'newapp/returnbook.html', context)
+            return render(request, 'library/returnbook.html', context)
 
-        return render(request, 'newapp/returnbook.html')
+        return render(request, 'library/returnbook.html')
         
 
     else:               #if some other form/page is submitted then return the error message
         return HttpResponse("Invalid form type.")    
 
 def Home(request):             #used due to menu button.probabily.
-    return render(request,'newapp/Home.html')
+    return render(request,'library/Home.html')
 
 def returnbook(request):             #when user opens the returnbook page then list of issued books should be in the result section.
     book = issued_books.objects.all()  
     context = {  
         "mybook": book  
     }  
-    return render(request, 'newapp/returnbook.html', context) 
+    return render(request, 'library/returnbook.html', context) 
 
