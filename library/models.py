@@ -33,32 +33,3 @@ class issued_books(models.Model):
     class Meta:
         db_table = 'issued_books'
         managed = True
-
-
-
-# from django.db import models
-
-# # Create your models here.
-# from django.db import models
-
-# class User(models.Model):
-#     name = models.CharField(max_length=255)
-#     email = models.EmailField(unique=True)
-#     phone_number = models.CharField(max_length=15)
-#     address = models.TextField()
-#     membership_date = models.DateField()
-
-# class Book(models.Model):
-#     title = models.CharField(max_length=255)
-#     author = models.CharField(max_length=255)
-#     genre = models.CharField(max_length=100)
-#     publication_year = models.PositiveIntegerField()
-#     isbn = models.CharField(max_length=13, unique=True)
-#     copies_available = models.IntegerField()
-
-# class BorrowingRecord(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-#     borrow_date = models.DateField()
-#     return_date = models.DateField(null=True, blank=True)
-#     status = models.CharField(max_length=10, choices=[('borrowed', 'Borrowed'), ('returned', 'Returned'), ('overdue', 'Overdue')])
