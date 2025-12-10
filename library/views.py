@@ -192,3 +192,62 @@ def returnbook(request):             #when user opens the returnbook page then l
     }  
     return render(request, 'library/returnbook.html', context) 
 
+def viewbooks(request):
+    # ---------------------------------------------------------
+    # SCENARIO 1: User visits the page (GET Request)
+    # This loads the first 10 records automatically
+    # ---------------------------------------------------------
+    if request.method == 'GET':
+        # Fetch all books, convert to values (dictionaries), and slice the first 10
+        mybook = books.objects.all().values()[:10]
+        return render(request, 'library/viewbooks.html', {'mybook': mybook})
+
+    # ---------------------------------------------------------
+    # SCENARIO 2: User clicks Search (POST Request)
+    # This runs your existing filtering logic
+    # ---------------------------------------------------------
+    elif request.method == 'POST':
+        form_type = request.POST.get('form_type')
+
+        if form_type == 'viewbooks_form':
+            Genre = request.POST.get('Category')
+            Bookname = request.POST.get('Bookname')
+            
+            # Handle NoneType if inputs are missing
+            genstr = str(Genre) if Genre else ''
+            x = str(Bookname) if Bookname else ''
+
+            # 1. Search by Category only
+            if x == '' and genstr != '':
+                if genstr == 'Other':
+                    mybook = books.objects.filter(Q(genre__isnull=True) | Q(genre='')).values()
+                else:
+                    mybook = books.objects.filter(genre__icontains=genstr).values()
+                
+                return render(request, 'library/viewbooks.html', {'mybook': mybook})
+
+            # 2. Search by Book Name only
+            elif x != '' and genstr == '':
+                mybook = books.objects.filter(book_name__icontains=x).values()
+                return render(request, 'library/viewbooks.html', {'mybook': mybook})
+
+            # 3. Empty Search (Reset/Show all or Show empty)
+            elif x == '' and genstr == '':
+                # Optional: You might want to show the top 10 here too instead of empty
+                mybook = books.objects.all().values()[:10] 
+                return render(request, 'library/viewbooks.html', {'mybook': mybook})
+
+            # 4. Search by BOTH Book Name and Category
+            else:
+                if genstr == 'Other':
+                    # Complex query: Name matches X AND (Genre is null OR Genre is empty)
+                    mybook = books.objects.filter(
+                        Q(book_name__icontains=x) & (Q(genre__isnull=True) | Q(genre=''))
+                    ).values()
+                else:
+                    mybook = books.objects.filter(book_name__icontains=x, genre__icontains=genstr).values()
+                
+                return render(request, 'library/viewbooks.html', {'mybook': mybook})
+
+    # Fallback return
+    return render(request, 'library/viewbooks.html')
